@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gec.dao.BrandMapper">
+
+    <!--1.删除品牌与类别的关联。
+        void removeAssociate(
+            @Param("brandId") Integer brandId );
+            @Param("categoryIds") List<Integer> categoryIds );
+    -->
+    <delete id="removeAssociate">
+        DELETE FROM tbl_brand_category
+        WHERE brand_id=#{brandId}
+        AND category_id in (
+            <foreach collection="categoryIds"
+              item="categoryId" separator=",">
+                    #{categoryId}
+            </foreach>
+        )
+    </delete>
+
+
+    <!-- 2.创建品牌与类别的关联。
+        int associateCategory(
+            @Param("bcVO") BrandCategoryVO bcVO); -->
+    <insert id="associateCategory">
+        INSERT INTO tbl_brand_category
+          ( brand_id, brand_name, category_id, category_name )
+        VALUES
+        <foreach collection="bcVO.categories"
+            item="category" separator=",">(
+             #{bcVO.brandId}, #{bcVO.brandName},
+             #{category.id}, #{category.categoryName}
+            )
+        </foreach>
+    </insert>
+
+
+    <!-- 3. 获取品牌列表。
+           (根据类别 ID 来设置是否与某个类别有有关联)
+        Page<BrandVO> listByCategory(
+            @Param("page") Page<BrandVO> page,
+            @Param("param") BrandSearch param );
+    -->
+    <select id="listByCategory" resultType="BrandVO">
+       SELECT b.*, t_bc.brand_id,
+          CASE
+            WHEN t_bc.brand_id is NULL THEN 0
+            ELSE 1
+          END isAssociate
+       FROM tbl_brand b
+       LEFT JOIN
+       (
+            SELECT * FROM tbl_brand_category bc
+            WHERE bc.category_id=#{param.categoryId}
+       ) t_bc
+       ON b.id = t_bc.brand_id
+       <include refid="list_where"/>
+    </select>
+    <!-- 4. list_where -->
+    <sql id="list_where">
+            <where>
+                <if test="param.id!=null">
+                        AND b.id = #{param.id}
+                </if>
+                <if test="param.brandName!=null">
+                    AND b.brandName
+                    LIKE CONCAT('%',#{param.brandName},'%')
+
+                </if>
+            </where>
+    </sql>
+</mapper>

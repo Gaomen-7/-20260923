@@ -1,0 +1,36 @@
+# === 后端 Java ===
+target/
+*.class
+*.jar
+*.war
+*.iml
+.idea/
+*.log
+run_log*.txt
+
+# === 前端 Node ===
+node_modules/
+dist/
+*.log
+npm-debug.log*
+
+# === 系统文件 ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === 编辑器 ===
+.vscode/
+*.swp
+*.swo
+
+# === 临时截图 ===
+screenshot*.png
+error_screenshot.png
+red_error.png
+*.visual-check.*.png
+
+# === 数据文件（不入库） ===
+phase2-csv/
+*.csv
+!**/src/**/*.csv

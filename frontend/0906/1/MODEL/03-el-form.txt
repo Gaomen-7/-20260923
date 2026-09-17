@@ -1,0 +1,27 @@
+<el-form
+	:model="deptForm" :rules="deptRules"
+	ref="deptFormRef">
+	  <div>{{dialogTitle}}</div>
+
+	  <el-form-item label="部门名称" prop="deptName" 
+		style="margin-top:5px;">
+		<el-input v-model="deptForm.deptName"></el-input>
+	  </el-form-item>
+	  
+	  <el-form-item label="父节点ID" prop="parentId" 
+		style="margin-top:5px;">
+		<el-input v-model="deptForm.parentId" readonly></el-input>
+		<input type="hidden" :value="deptForm.pIds" />
+	  </el-form-item>
+	  
+	  <el-form-item label="部门描述" prop="deptDesc" 
+		style="margin-top:5px;">
+		<el-input v-model="deptForm.deptDesc"></el-input>
+	  </el-form-item>	
+
+	  <!-- {1}[添加其它同类项] -->
+	  <span>
+		 <el-button id="confirm" type="primary" 					
+			@click="saveDept">{{btnText}}</el-button>
+	  </span>
+</el-form>

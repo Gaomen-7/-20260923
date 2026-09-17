@@ -1,0 +1,8 @@
+<el-pagination
+    background
+    layout="total, sizes, prev, pager, next, jumper"
+    :total="totalCount"
+    :current-page="curPage"
+    @current-change="reloadPage"
+    style="margin-top:5px;">
+</el-pagination>

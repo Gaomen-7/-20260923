@@ -1,0 +1,45 @@
+<el-col :span="6">
+			<el-card class="box-card">
+			
+			  <div slot="header" class="clearfix">
+				<label>请选择部门</label>
+				<label style="margin-left:20px;color:gray;">名称过滤:</label>
+				<el-input size="small" style="width:100px;"
+					v-model="filterForm.deptName"
+					@change="onFilter();" >
+				</el-input>
+			  </div>
+			  
+			  <el-tree
+				:data="deptList"				
+				:props="defaultProps"
+				:expand-on-click-node="false"
+				node-key="id"
+				show-checkbox				
+				default-expand-all				
+				@node-click="handleNodeClick" >
+				<span class="custom-tree-node" slot-scope="{ node, data }">
+					<span>{{ data.deptName }}</span>
+					<span style="margin-left:8px;">
+						  <el-button
+							 type="text"
+							 size="medium"
+							 v-if="data.level<=3"
+							 @click.stop
+							 @click="()=>handleAppend(data)">
+							 添加
+						  </el-button>
+						  <el-button
+						     style="margin-left:5px;"
+							 type="text"
+							 size="medium"
+							 v-if="data.isLeap"
+							 @click.stop
+							 @click="()=>handleDelete(data)">
+							 删除
+						  </el-button> 
+					</span>
+			    </span>
+			  </el-tree>
+			</el-card>	  
+		</el-col>

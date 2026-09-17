@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "商城项目系统架构图",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [960, 500],
+    "views": [
+      { "id": "phase1-request", "label": "第一阶段：业务请求链路", "focus": ["admin-browser", "frontend-admin", "springboot-app", "controller-layer", "service-layer", "mysql-db", "redis-cache"], "note": "管理员通过前端管理台发起请求，经 SpringBoot Controller/Service 层读写 MySQL 与 Redis。" },
+      { "id": "publish-flow", "label": "商品发布五步流程", "focus": ["frontend-admin", "springboot-app", "service-layer", "redis-cache", "mysql-db"], "note": "发布商品四步数据缓存 Redis，第五步 GoodsPersister 五表事务持久化后清理缓存。" },
+      { "id": "phase2-pipeline", "label": "第二阶段：数据分析链路", "focus": ["data-generator", "file-storage", "docker-hive", "mysql-db", "springboot-app", "frontend-analysis"], "note": "Java 生成器输出4种文件 → Hive ODS/ADS 清洗 → CSV 中转 → MySQL 落地 → 分析接口 → ECharts 看板。" }
+    ]
+  },
+  "components": [
+    { "id": "admin-browser", "type": "external", "label": "管理员浏览器", "sublabel": "Chrome / Edge", "pos": [380, 12], "size": [200, 48] },
+
+    { "id": "frontend-admin", "type": "frontend", "label": "前端管理台", "sublabel": "Vue2 + ElementUI · 22个业务页面", "tag": "webpack3 · :8080", "pos": [40, 84], "size": [280, 68] },
+    { "id": "frontend-analysis", "type": "frontend", "label": "数据分析看板", "sublabel": "Vue2 + ECharts · 4个分析页面", "tag": "行为/订单/评价/交流", "pos": [380, 84], "size": [280, 68] },
+
+    { "id": "springboot-app", "type": "backend", "label": "SpringBoot 应用", "sublabel": "2.3.7 + MyBatis-Plus 3.4.2", "tag": ":8090 /mall-sys", "pos": [210, 180], "size": [280, 60] },
+    { "id": "data-generator", "type": "backend", "label": "Java 数据生成器", "sublabel": "DataGenerator · 固定随机种子", "tag": "4种文件 / 11.7万行", "pos": [520, 180], "size": [180, 60] },
+    { "id": "docker-hive", "type": "cloud", "label": "Docker Hive 集群", "sublabel": "Hadoop 3.2.1 + Hive 2.3.2", "tag": "5容器 · Derby metastore", "pos": [720, 180], "size": [200, 60] },
+
+    { "id": "controller-layer", "type": "backend", "label": "Controller 适配层", "sublabel": "17业务 + 4分析 = 21个Controller", "tag": "纯HTTP适配 · 已瘦身", "pos": [40, 276], "size": [280, 68] },
+    { "id": "service-layer", "type": "backend", "label": "Service 业务层", "sublabel": "15个Service + publish深模块包", "tag": "SkuGenerator/GoodsPersister等5模块", "pos": [380, 276], "size": [280, 68] },
+
+    { "id": "mysql-db", "type": "database", "label": "MySQL 8", "sublabel": "project20206 库 · 28张表", "tag": "127.0.0.1:3306", "pos": [40, 388], "size": [200, 60] },
+    { "id": "redis-cache", "type": "database", "label": "Redis", "sublabel": "发布流程会话缓存", "tag": "localhost:6379", "pos": [270, 388], "size": [200, 60] },
+    { "id": "file-storage", "type": "external", "label": "文件存储", "sublabel": "上传目录 + 阶段二数据目录", "tag": "D:/haida/space/", "pos": [720, 388], "size": [200, 60] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "前端层（mypro5）", "wraps": ["frontend-admin", "frontend-analysis"], "pad": 10 },
+    { "kind": "region", "label": "后端应用层（mall-sys）", "wraps": ["springboot-app", "controller-layer", "service-layer"], "pad": 10 },
+    { "kind": "region", "label": "第二阶段 · 数据分析链路", "wraps": ["docker-hive", "data-generator"], "pad": 10 },
+    { "kind": "region", "label": "数据存储层", "wraps": ["mysql-db", "redis-cache", "file-storage"], "pad": 10 }
+  ],
+  "connections": [
+    { "id": "browser-to-admin", "from": "admin-browser", "to": "frontend-admin", "label": "HTTP", "fromSide": "bottom", "toSide": "top", "labelDy": 12 },
+    { "id": "browser-to-analysis", "from": "admin-browser", "to": "frontend-analysis", "label": "HTTP", "fromSide": "bottom", "toSide": "top", "labelDy": 12 },
+
+    { "id": "admin-to-api", "from": "frontend-admin", "to": "springboot-app", "label": "axios REST API", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "via": [[180, 168], [350, 168]], "labelDy": 8 },
+    { "id": "analysis-to-api", "from": "frontend-analysis", "to": "springboot-app", "label": "axios REST API", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "via": [[520, 168], [350, 168]], "labelDy": 8 },
+
+    { "id": "app-to-controller", "from": "springboot-app", "to": "controller-layer", "label": "路由分发", "fromSide": "bottom", "toSide": "top" },
+    { "id": "controller-to-service", "from": "controller-layer", "to": "service-layer", "label": "业务委托" },
+
+    { "id": "service-to-mysql", "from": "service-layer", "to": "mysql-db", "label": "MyBatis-Plus SQL", "fromSide": "bottom", "toSide": "top", "labelAt": [270, 372] },
+    { "id": "service-to-redis", "from": "service-layer", "to": "redis-cache", "label": "发布流程缓存", "fromSide": "bottom", "toSide": "top", "labelAt": [440, 358] },
+    { "id": "service-to-file", "from": "service-layer", "to": "file-storage", "label": "文件上传/读取", "variant": "dashed", "fromSide": "bottom", "toSide": "top", "labelAt": [570, 368] },
+
+    { "id": "generator-to-file", "from": "data-generator", "to": "file-storage", "label": "生成4种数据文件", "fromSide": "bottom", "toSide": "top", "via": [[610, 268], [680, 268], [680, 372], [820, 372]], "labelAt": [630, 358] },
+    { "id": "file-to-hive", "from": "file-storage", "to": "docker-hive", "label": "LOAD DATA → ODS", "variant": "dashed", "fromSide": "top", "toSide": "bottom", "via": [[820, 372], [800, 372], [800, 256], [820, 256]], "labelAt": [755, 314] },
+    { "id": "hive-to-file", "from": "docker-hive", "to": "file-storage", "label": "ADS → 导出CSV", "variant": "dashed", "fromSide": "bottom", "toSide": "top", "via": [[820, 256], [840, 256], [840, 372], [820, 372]], "labelAt": [880, 314] },
+    { "id": "file-to-mysql", "from": "file-storage", "to": "mysql-db", "label": "JDBC批量写入 ads_ 表", "fromSide": "bottom", "toSide": "bottom", "via": [[820, 476], [140, 476]], "labelDy": 24 }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "第一阶段 · 电商后台管理", "items": ["Vue2 + ElementUI 前端，22个业务页面", "SpringBoot 后端 21个Controller已瘦身，publish包5个深模块", "MySQL 8 存28张业务表，Redis 缓存发布流程中间态"] },
+    { "dot": "emerald", "title": "第二阶段 · 电商数据分析", "items": ["Java 生成器输出行为/订单/评价/交流4种文件", "Docker Hive 5容器：ODS原始层 + ADS聚合宽表", "CSV 中转 → JDBC 写入 MySQL → SpringBoot 23端点 → ECharts 看板"] },
+    { "dot": "rose", "title": "架构关键决策", "items": ["命名统一：spu_id → goods_id，主表 tbl_goods_info", "上架锁定 ADR-001：上架后核心信息不可编辑", "Hive metastore 从 PostgreSQL 迁移到 Derby 内嵌数据库"] }
+  ]
+}

@@ -1,0 +1,101 @@
+services:
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    restart: always
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+      - "D:/haida/space/phase2-data:/tmp/phase2-data"
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./hadoop.env
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    restart: always
+    ports:
+      - "9864:9864"
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+    env_file:
+      - ./hadoop.env
+
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: resourcemanager
+    restart: always
+    ports:
+      - "8088:8088"
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870 datanode:9864
+    env_file:
+      - ./hadoop.env
+
+  nodemanager:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nodemanager
+    restart: always
+    ports:
+      - "8042:8042"
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870 datanode:9864 resourcemanager:8088
+    env_file:
+      - ./hadoop.env
+
+  hive-metastore:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-metastore
+    restart: always
+    ports:
+      - "9083:9083"
+    volumes:
+      - ./hive-site.xml:/opt/hive/conf/hive-site.xml
+    command: >
+      /opt/hive/bin/hive --service metastore
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870 datanode:9864 hive-metastore-postgresql:5432
+
+  hive-server:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-server
+    restart: always
+    ports:
+      - "10000:10000"
+      - "10002:10002"
+    volumes:
+      - ./hive-site.xml:/opt/hive/conf/hive-site.xml
+      - ./hive-env.sh:/opt/hive/conf/hive-env.sh
+      - "D:/haida/space/phase2-data:/tmp/phase2-data"
+      - hive-metastore-db:/opt/hive/metastore_db
+    command: >
+      /opt/hive/bin/hiveserver2 --hiveconf hive.server2.enable.doAs=false
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870 datanode:9864
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+
+  hive-metastore-postgresql:
+    image: postgres:9.6
+    container_name: hive-metastore-postgresql
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - hive_postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=hive
+      - POSTGRES_PASSWORD=hive
+      - POSTGRES_DB=metastore
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
+  hive_postgres:
+  hive-metastore-db:

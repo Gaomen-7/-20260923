@@ -1,0 +1,88 @@
+<script src="jquery.min.js"></script>
+<style>
+body{ background:#F5F5F5; }
+#container span{ font-size:19px; }
+#container label{ font-size:19px }
+#container input{ font-size:19px }
+#container [type='button']{
+	font-size:19px; cursor:pointer;
+	width:100px; height:40px;
+	border:2px solid #999;
+}
+#userId{
+	width:150px; height:39px;
+	border:2px solid #999;
+	text-indent:0.2em;
+	background:#E9E9E9;
+}
+img{ border:1px solid #666; }
+span{ color:blue; font-weight:bold; }
+#tips{ font-weight:normal; color:#666; }
+#addr{ 
+	font-size:19px; width:450px;
+	height:35px; border:2px solid #999;
+	text-indent:0.3em; background:#E9E9E9;
+}
+</style>
+
+<script>
+var BASE = "http://localhost:8090/mall-sys";
+var MODULE = "/Brand";
+var PATH = `${BASE}${MODULE}/upload`;
+window.onload = function(){
+	$("#addr").val( PATH );
+}
+
+function doUpload(){
+	var file = $("#file")[0];
+	var file1 = file.files[0];	
+	let FD = new FormData();
+	FD.append("file",file1);
+	FD.append("userId","1");
+	
+	$.ajax({
+		url: PATH,
+		type: "post",
+		data: FD,		
+		dataType: "json",
+		contentType: false,
+		processData: false,	
+		success:function( resp ){
+			var ret = resp.result;
+			if( ret=='success' ){
+				tips(
+				  "{1}文件上传成功..<br/>"+
+				  "{2}文件网址: "+ resp.logoUri
+				);
+				var url = "http://localhost:8090/mall-sys"+ resp.logoUri;
+				$("#img1").attr("src",url);
+			}else{
+				tips("文件上传失败..");
+			}
+		}
+	});	
+}
+
+function tips( msg ){
+	$("#tips").html( msg );
+}
+</script>
+<div id="container">
+	<label>API 地址:</label>
+	<input type="text" id="addr" />
+	<br/><br/>
+	<input type="file" id="file" />
+	<br/><br/>
+	<label>用户 ID: </label>
+	<input type="text" id="userId" value="100" />
+	<input type="button" value="点击上传" 
+		onclick="doUpload();"/>
+	<br/><br/>	
+	<label>图片预览: </label>
+	<br/>
+	<img id="img1" src="" />
+	<br/><br/>
+	<span id="tips"></span>
+</div>
+
+

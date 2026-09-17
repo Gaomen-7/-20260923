@@ -1,0 +1,49 @@
+<el-form :inline="true" 
+	:model="searchForm" class="demo-form-inline">
+  <el-form-item label="用户名称">
+	<el-input v-model="searchForm.account" 
+	placeholder="用户名称" 
+	:disabled="searchForm.deptId===''">
+	</el-input>
+  </el-form-item>
+  
+  <el-form-item label="角色">
+	<el-select v-model="searchForm.roleId"
+		style="width:150px;"
+		placeholder="角色"
+		:disabled="searchForm.deptId===''">
+	  <el-option label="请选择角色" value=""></el-option>
+	  <el-option 
+		 v-for="(item,index) in roleList" 
+		 :key="index" 
+		 :label="item.label"
+		 :value="item.value">
+	  </el-option>
+	</el-select>	
+  </el-form-item>
+  
+  <el-form-item label="性别">
+	<el-select v-model="searchForm.sex" 
+		style="width:150px;"
+		placeholder="请选择性别"
+		:disabled="searchForm.deptId===''">
+	  <el-option label="请选择性别" value=""></el-option>
+	  <el-option label="男" value="男"></el-option>
+	  <el-option label="女" value="女"></el-option>
+	</el-select>	
+  </el-form-item>		  
+  
+  <el-form-item>
+	<el-button type="primary" 
+		@click="onSearch"
+		:disabled="searchForm.deptId===''">
+		查询
+	</el-button>
+	<el-button type="primary" 
+		@click="doShowAddBox" 
+		:disabled="searchForm.deptId===''">
+		添加
+	</el-button>
+	<el-button type="primary" @click="doBatchDelete">批量删除</el-button>
+  </el-form-item>
+</el-form>

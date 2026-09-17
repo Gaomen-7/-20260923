@@ -1,0 +1,10 @@
+					  <el-form-item label="Ñ¡ÔñÆ·ÅÆ:" prop="brandId">
+						   <el-select v-model="spuForm.spuDetail.brandId" 
+							 clearable placeholder="ÇëÑ¡ÔñÆ·ÅÆ">
+							 <el-option 
+								v-for="(item,index) in brandOptions" 
+								key="item.value"
+								:label="item.label" :value="item.value">
+							 </el-option>
+						   </el-select>
+					   </el-form-item>

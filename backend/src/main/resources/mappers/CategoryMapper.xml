@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gec.dao.CategoryMapper">
+
+    <!--
+        根据类别 ID，撤消品牌与类别的关联。
+         int removeAssociate(
+            @Param("categoryId")Integer categoryId,
+            @Param("brandIds") List<Integer> brandIds
+        );
+    -->
+	<delete id="removeAssociate">
+        DELETE FROM tbl_brand_category
+        WHERE category_id=#{categoryId}
+        AND brand_id in (
+            <foreach collection="brandIds"
+                item="brandId" separator= ",">
+                #{brandId}
+            </foreach>
+        )
+    </delete>
+
+    <!--
+        {PS}实现类别与品牌间的关联关系。(以类别为视角)
+        【类别】==>【品牌1】
+               ==>【品牌2】
+               ==>【品牌3】
+        int associateBrand(CategoryBrandVO cbVO);
+        collection ==> List<Brand> brands;
+    -->
+	<insert id="">
+        INSERT INTO tbl_brand_category
+        (brand_id,brand_name,category_id,category_name )
+        VALUES
+        <foreach collection="cbVO.brands" item="brand" separator=",">
+        (
+            #{brand.id},#{brand.brandName},
+            #{cbVO.categoryId},#{cbVO.categoryName}
+        )
+        </foreach>
+    </insert>
+
+
+</mapper>

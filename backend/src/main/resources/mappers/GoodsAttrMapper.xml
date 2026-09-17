@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gec.dao.GoodsAttrMapper">
+
+    <!-- 1. 分页查询属性列表（LEFT JOIN 分组表，返回 groupName） -->
+    <select id="getGoodsAttrList" resultType="com.gec.domain.bo.GoodsAttrBO">
+        SELECT
+            a.id,
+            a.attr_name,
+            a.category_id,
+            a.attr_type,
+            a.value_type,
+            a.attr_value,
+            a.enable,
+            a.search_enable,
+            g.id AS attr_group_id,
+            g.group_name
+        FROM tbl_goods_attr a
+        LEFT JOIN tbl_group_attr_relation r ON a.id = r.attr_id
+        LEFT JOIN tbl_goods_attr_group g ON r.attr_group_id = g.id
+        <where>
+            <if test="param.categoryId != null">
+                AND a.category_id = #{param.categoryId}
+            </if>
+            <if test="param.attrType != null">
+                AND a.attr_type = #{param.attrType}
+            </if>
+            <if test="param.attrName != null and param.attrName != ''">
+                AND a.attr_name LIKE CONCAT('%', #{param.attrName}, '%')
+            </if>
+            <if test="param.attrGroupId != null">
+                AND r.attr_group_id = #{param.attrGroupId}
+            </if>
+        </where>
+        ORDER BY a.id ASC
+    </select>
+
+    <!-- 2. 添加分组属性关联 -->
+    <insert id="addGroupAttrRelation">
+        INSERT INTO tbl_group_attr_relation (attr_group_id, attr_id)
+        VALUES (#{attrGroupId}, #{attrId})
+    </insert>
+
+    <!-- 3. 删除属性的全部分组关联 -->
+    <delete id="removeGroupAttrRelation">
+        DELETE FROM tbl_group_attr_relation WHERE attr_id = #{attrId}
+    </delete>
+
+    <!-- 4. 添加属性值（保留接口，当前 attr_value 直接存主表） -->
+    <insert id="addGoodsAttrVal">
+        INSERT INTO tbl_goods_attr_value (spu_id, attr_id, value_type, attr_value)
+        VALUES (0, #{id}, #{valueType}, #{attrValue})
+    </insert>
+
+    <!-- 5. 删除属性值（保留接口） -->
+    <delete id="removeGoodsAttrVal">
+        DELETE FROM tbl_goods_attr_value WHERE attr_id = #{attrId}
+    </delete>
+
+    <!-- 6. 根据属性ID列表查询属性值 -->
+    <select id="getAttrValByAttrId" resultType="com.gec.domain.entity.GoodsAttrValue">
+        SELECT * FROM tbl_goods_attr_value WHERE attr_id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

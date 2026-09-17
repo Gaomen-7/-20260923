@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gec.dao.ChatAnalysisStatMapper">
+
+    <select id="selectByDimensionType" resultType="com.gec.domain.analysis.ChatAnalysisStat">
+        SELECT * FROM ads_chat_analysis
+        WHERE dimension_type = #{dimensionType}
+        <if test="startDate != null and startDate != ''">
+            AND stat_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND stat_date &lt;= #{endDate}
+        </if>
+        ORDER BY stat_date ASC, dimension_value ASC
+    </select>
+
+    <select id="selectByDimensionTypes" resultType="com.gec.domain.analysis.ChatAnalysisStat">
+        SELECT * FROM ads_chat_analysis
+        WHERE dimension_type IN
+        <foreach collection="types" item="t" open="(" separator="," close=")">
+            #{t}
+        </foreach>
+        <if test="startDate != null and startDate != ''">
+            AND stat_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND stat_date &lt;= #{endDate}
+        </if>
+        ORDER BY stat_date ASC, dimension_type ASC, dimension_value ASC
+    </select>
+
+    <select id="selectTopByDimensionType" resultType="com.gec.domain.analysis.ChatAnalysisStat">
+        SELECT * FROM ads_chat_analysis
+        WHERE dimension_type = #{dimensionType}
+        <if test="startDate != null and startDate != ''">
+            AND stat_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND stat_date &lt;= #{endDate}
+        </if>
+        ORDER BY ${orderField} DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectTopConsultedProducts" resultType="com.gec.domain.analysis.ChatAnalysisStat">
+        SELECT dimension_value AS dimensionValue,
+               SUM(session_count) AS sessionCount,
+               SUM(user_count) AS userCount,
+               SUM(conversion_count) AS conversionCount,
+               ROUND(SUM(conversion_count) / SUM(session_count), 4) AS conversionRate
+        FROM ads_chat_analysis
+        WHERE dimension_type = 'product'
+        <if test="startDate != null and startDate != ''">
+            AND stat_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND stat_date &lt;= #{endDate}
+        </if>
+        GROUP BY dimension_value
+        ORDER BY sessionCount DESC
+        LIMIT #{limit}
+    </select>
+</mapper>

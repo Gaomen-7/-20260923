@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gec.dao.UserBehaviorStatMapper">
+
+    <select id="selectByDimensionType" resultType="com.gec.domain.analysis.UserBehaviorStat">
+        SELECT * FROM ads_user_behavior
+        WHERE dimension_type = #{dimensionType}
+        <if test="startDate != null and startDate != ''">
+            AND stat_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND stat_date &lt;= #{endDate}
+        </if>
+        ORDER BY stat_date ASC, dimension_value ASC
+    </select>
+
+    <select id="selectByDimensionTypes" resultType="com.gec.domain.analysis.UserBehaviorStat">
+        SELECT * FROM ads_user_behavior
+        WHERE dimension_type IN
+        <foreach collection="types" item="t" open="(" separator="," close=")">
+            #{t}
+        </foreach>
+        <if test="startDate != null and startDate != ''">
+            AND stat_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND stat_date &lt;= #{endDate}
+        </if>
+        ORDER BY stat_date ASC, dimension_type ASC, dimension_value ASC
+    </select>
+
+    <select id="selectTopByDimensionType" resultType="com.gec.domain.analysis.UserBehaviorStat">
+        SELECT * FROM ads_user_behavior
+        WHERE dimension_type = #{dimensionType}
+        <if test="startDate != null and startDate != ''">
+            AND stat_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND stat_date &lt;= #{endDate}
+        </if>
+        ORDER BY ${orderField} DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectTopProducts" resultType="com.gec.domain.analysis.UserBehaviorStat">
+        SELECT dimension_value AS dimensionValue,
+               SUM(pv) AS pv,
+               SUM(uv) AS uv,
+               SUM(conversion_count) AS conversionCount
+        FROM ads_user_behavior
+        WHERE dimension_type IN ('product_view', 'product_cart', 'product_fav')
+        <if test="startDate != null and startDate != ''">
+            AND stat_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND stat_date &lt;= #{endDate}
+        </if>
+        GROUP BY dimension_value
+        ORDER BY pv DESC
+        LIMIT #{limit}
+    </select>
+</mapper>

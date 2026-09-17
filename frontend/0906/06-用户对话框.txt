@@ -1,0 +1,55 @@
+<el-dialog :title="dialogTitle" :visible.sync="showFormBox" width="60%" 
+		:before-close="handleClose" style="padding:8px 15px;"
+		@close="onClose" :close-on-click-modal="false" >
+
+		<!-- 5.1 [放置表单] -->	 
+		<el-form :model="userForm" :rules="userFormRules"
+			   ref="userFormRef" >
+			<el-form-item label="用户帐号" prop="account" 
+					style="margin-top:5px;">
+				<el-input v-model="userForm.account" 
+					:readonly="opMode=='edit'" ></el-input> 
+			</el-form-item>
+			<el-form-item label="用户昵称" prop="nickName" 
+				style="margin-top:5px;">
+				<el-input v-model="userForm.nickName"></el-input> 
+			</el-form-item>
+			<el-form-item label="性别" prop="sex" 
+				style="margin-top:5px;">
+				<el-select v-model="userForm.sex" placeholder="请选择性别">
+				  <el-option label="男" value="男"></el-option>
+				  <el-option label="女" value="女"></el-option>
+				</el-select>				
+			</el-form-item>
+			
+			<el-form-item label="角色">
+				<el-select v-model="userForm.roleId" placeholder="角色">
+				    <el-option label="请选择角色" value=""></el-option>
+						<el-option 
+						 v-for="(item,index) in roleList" 
+						 :key="index" 
+						 :label="item.label"
+						 :value="item.value">
+					  </el-option>
+				</el-select>	
+			</el-form-item>
+			
+			<el-form-item label="工号" prop="no" 
+				style="margin-top:5px;">
+				<el-input v-model="userForm.no"></el-input> 
+			</el-form-item>
+			<el-form-item label="电邮" prop="email"
+				style="margin-top:5px;">
+				<el-input v-model="userForm.email"></el-input> 
+			</el-form-item>
+			<el-form-item label="电话" prop="phone"
+				style="margin-top:5px;">
+				<el-input v-model="userForm.phone"></el-input> 
+			</el-form-item>
+		</el-form>			
+		<!-- 5.2 [放置 span] -->
+		<span slot="footer" class="dialog-footer">
+			<el-button @click="showFormBox=false">取消</el-button>
+			<el-button type="primary" @click="doSaveUser">确定</el-button>
+		</span>
+	</el-dialog>

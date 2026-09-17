@@ -1,0 +1,15 @@
+	<el-col :span="5">
+		<el-card class="box-card">
+		  <div slot="header" class="clearfix">
+			<span>请选择部门</span>
+			<el-button style="float: right; padding: 3px 0"
+				type="text">操作按钮</el-button>
+		  </div>	  
+			<el-tree
+			  :data="deptList"
+			  :props="defaultProps"
+			  accordion
+			  @node-click="handleNodeClick">
+			</el-tree>
+		</el-card>	  
+	</el-col>

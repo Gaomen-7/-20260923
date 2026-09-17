@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gec.dao.OrderInfoMapper">
+
+    <!-- 分页查询订单列表 -->
+    <select id="getOrderList" resultType="com.gec.domain.bo.OrderInfoBO">
+        SELECT
+            o.id,
+            o.order_no,
+            o.user_id,
+            o.user_name,
+            o.user_phone,
+            o.receiver_name,
+            o.receiver_phone,
+            o.receiver_address,
+            o.total_amount,
+            o.discount_amount,
+            o.actual_amount,
+            o.freight,
+            o.pay_status,
+            o.order_status,
+            o.remark,
+            o.create_time,
+            o.update_time,
+            (SELECT goods_name FROM tbl_order_item WHERE order_id = o.id LIMIT 1) AS goods_name,
+            (SELECT goods_image FROM tbl_order_item WHERE order_id = o.id LIMIT 1) AS goods_image,
+            (SELECT price FROM tbl_order_item WHERE order_id = o.id LIMIT 1) AS price,
+            (SELECT quantity FROM tbl_order_item WHERE order_id = o.id LIMIT 1) AS quantity,
+            (SELECT COUNT(*) FROM tbl_order_item WHERE order_id = o.id) AS item_count
+        FROM tbl_order_info o
+        <where>
+            <if test="param.orderNo != null and param.orderNo != ''">
+                AND o.order_no LIKE CONCAT('%', #{param.orderNo}, '%')
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (
+                    o.user_name LIKE CONCAT('%', #{param.keyword}, '%')
+                    OR o.user_phone LIKE CONCAT('%', #{param.keyword}, '%')
+                    OR o.receiver_name LIKE CONCAT('%', #{param.keyword}, '%')
+                    OR o.receiver_phone LIKE CONCAT('%', #{param.keyword}, '%')
+                )
+            </if>
+            <if test="param.userName != null and param.userName != ''">
+                AND o.user_name LIKE CONCAT('%', #{param.userName}, '%')
+            </if>
+            <if test="param.userPhone != null and param.userPhone != ''">
+                AND o.user_phone LIKE CONCAT('%', #{param.userPhone}, '%')
+            </if>
+            <if test="param.receiverName != null and param.receiverName != ''">
+                AND o.receiver_name LIKE CONCAT('%', #{param.receiverName}, '%')
+            </if>
+            <if test="param.receiverPhone != null and param.receiverPhone != ''">
+                AND o.receiver_phone LIKE CONCAT('%', #{param.receiverPhone}, '%')
+            </if>
+            <if test="param.orderStatus != null">
+                AND o.order_status = #{param.orderStatus}
+            </if>
+            <if test="param.startTime != null and param.startTime != ''">
+                AND o.create_time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null and param.endTime != ''">
+                AND o.create_time &lt;= CONCAT(#{param.endTime}, ' 23:59:59')
+            </if>
+            <if test="param.goodsName != null and param.goodsName != ''">
+                AND EXISTS (
+                    SELECT 1 FROM tbl_order_item oi
+                    WHERE oi.order_id = o.id
+                    AND oi.goods_name LIKE CONCAT('%', #{param.goodsName}, '%')
+                )
+            </if>
+        </where>
+        ORDER BY o.id DESC
+    </select>
+
+</mapper>

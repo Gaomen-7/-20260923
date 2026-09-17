@@ -1,0 +1,11 @@
+			<el-row :gutter="20">
+				<el-col :span="20">
+					<el-steps :space="200" :active="0" finish-status="success">
+					  <el-step title="基本信息"></el-step>
+					  <el-step title="规格参数"></el-step>
+					  <el-step title="销售属性"></el-step>
+					  <el-step title="SKU设置"></el-step>
+					  <el-step title="保存完成"></el-step>
+					</el-steps>
+				</el-col>
+			</el-row>

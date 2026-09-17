@@ -1,0 +1,8 @@
+					  <el-form-item label="ËùÊôÀà±ð" prop="categoryId">
+						<el-cascader
+							v-model="spuForm.pIdArr"
+							:options="categoryList"
+							:props="{label:'categoryName',value:'id'}"
+							@change="cascaderChange">
+						</el-cascader>
+					  </el-form-item>

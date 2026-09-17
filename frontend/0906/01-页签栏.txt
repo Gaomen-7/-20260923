@@ -1,0 +1,6 @@
+<el-tabs type="border-card">
+  <el-tab-pane>
+	<span slot="label"><i class="el-icon-date"></i>用户列表</span>
+  </el-tab-pane>
+  <el-tab-pane label="添加用户">添加用户</el-tab-pane>
+</el-tabs>
