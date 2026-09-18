@@ -80,6 +80,10 @@
         </router-link>
 
         <div class="nav-section">数据分析</div>
+        <router-link to="/simulate/user" class="nav-item" :class="{on: P==25}" @click.native="select(25)">
+          <svg class="ic" style="color:var(--dop-cyan)" viewBox="0 0 256 256" fill="currentColor"><path d="M128,16A112,112,0,1,0,240,128,112.13,112.13,0,0,0,128,16Zm0,200a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-16-128h32v32h32v32h-32v32H112V152H80V120h32Z"/></svg>
+          <span>模拟用户</span>
+        </router-link>
         <router-link to="/analysis/behavior" class="nav-item" :class="{on: P==21}" @click.native="select(21)">
           <svg class="ic" style="color:var(--dop-green)" viewBox="0 0 256 256" fill="currentColor"><path d="M224,200h-8V40a8,8,0,0,0-8-8H152a8,8,0,0,0-8,8V80H96a8,8,0,0,0-8,8v40H48a8,8,0,0,0-8,8v64H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16ZM160,48h40V200H160ZM104,96h40V200H104ZM56,144H88v56H56Z"/></svg>
           <span>用户行为</span>
@@ -167,7 +171,8 @@ export default {
 	    5:'品牌管理', 6:'属性分组', 8:'规格参数', 9:'销售属性',
 	    10:'商品管理', 11:'发布商品', 16:'SKU管理', 12:'订单管理',
 	    17:'活动管理', 18:'会员管理', 19:'库存管理', 20:'广告设置',
-	    21:'用户行为分析', 22:'订单数据分析', 23:'评价数据分析', 24:'客服交流分析'
+	    21:'用户行为分析', 22:'订单数据分析', 23:'评价数据分析', 24:'客服交流分析',
+	    25:'模拟用户'
 	  }
 	  return map[this.P] || '电商后台'
 	}

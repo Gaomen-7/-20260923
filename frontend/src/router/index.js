@@ -148,6 +148,11 @@ const router = new Router({
       name: 'analysisChat',
       component: () => import('@/components/analysis/ChatAnalysis.vue')
     },
+    {
+      path: '/simulate/user',
+      name: 'simulateUser',
+      component: () => import('@/components/SimulateUser.vue')
+    },
   ]
 })
 
