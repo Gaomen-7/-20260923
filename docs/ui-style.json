@@ -1,0 +1,27 @@
+{
+  "query": "电商后台UI改版，左侧导航，多巴胺配色，当前页深蓝色",
+  "signature": {
+    "ground": "light",
+    "typeVoice": "rounded-friendly",
+    "imageWorld": "graphic-abstract",
+    "layoutLogic": "grid",
+    "colorStrategy": "full-color",
+    "motionVoice": "slow-push"
+  },
+  "why": {
+    "ground": "你指定的",
+    "typeVoice": "你指定的",
+    "imageWorld": "你指定的",
+    "layoutLogic": "你指定的",
+    "colorStrategy": "你指定的",
+    "motionVoice": "你指定的"
+  },
+  "open": [],
+  "divergence": {
+    "vsRecent": [
+      0
+    ],
+    "min": 0,
+    "require": 3
+  }
+}
