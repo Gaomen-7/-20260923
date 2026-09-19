@@ -110,6 +110,7 @@
 
 <script>
 import { pickForm, formatDate } from '@/utils/common.js'
+import { BRAND_IMG_PREFIX } from '@/utils/imageUrl'
 import {
 	getCategoryList,
 	addCategory,
@@ -257,8 +258,7 @@ export default {
 
 	/* 【M10】processList()【TODO】 */
 	processList( resp ){
-		let PREFIX = "http://localhost:8090/mall-sys"+
-					"/Brand/showImg";
+		let PREFIX = BRAND_IMG_PREFIX;
 		this.brandList = resp.data;    /* 赋值列表. */
 		this.totalCount = resp.total;  /* 赋值总记录数. */
 		this.selectItems = [];

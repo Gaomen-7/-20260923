@@ -204,6 +204,7 @@
 </template>
 
 <script>
+import { advertUrl } from '@/utils/imageUrl'
 import {
   list,
   addAdvert,
@@ -266,7 +267,7 @@ export default {
     getImageUrl(fileName) {
       if (!fileName) return ''
       if (fileName.indexOf('http') === 0) return fileName
-      return '/mall-sys/Advert/showImg/' + fileName
+      return advertUrl( fileName )
     },
 
     /* 搜索 */

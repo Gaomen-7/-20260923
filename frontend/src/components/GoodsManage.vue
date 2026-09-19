@@ -77,7 +77,8 @@
 		<el-table-column label="封面图" width="80" align="center">
 			<template slot-scope="scope">
 				<div class="goods-thumb">
-					<span>{{ scope.row.goodsName ? scope.row.goodsName.charAt(0) : '图' }}</span>
+					<img v-if="scope.row.mainImage" :src="coverUrl(scope.row.mainImage)" />
+					<span v-else>{{ scope.row.goodsName ? scope.row.goodsName.charAt(0) : '图' }}</span>
 				</div>
 			</template>
 		</el-table-column>
@@ -154,6 +155,7 @@ import {
 } from '@/api/pms_goods.js'
 import { getCategoryList } from '@/api/pms_category.js'
 import { list as getBrandList } from '@/api/pms_brand.js'
+import { goodsCoverUrl } from '@/utils/imageUrl'
 
 export default {
   name: 'GoodsManage',
@@ -178,7 +180,7 @@ export default {
 		curPage: 1,
 		pageSize: 10,
 		totalCount: 0,
-		multipleSelection: []
+		multipleSelection: [],
 	}
   },
 
@@ -189,6 +191,9 @@ export default {
   },
 
   methods:{
+    coverUrl( fileName ){
+      return goodsCoverUrl( fileName );
+    },
 	getGoodsData(){
 		let params = {
 			page: this.curPage,
@@ -387,5 +392,11 @@ export default {
 	color: #c0c4cc;
 	font-size: 16px;
 	margin: 0 auto;
+	overflow: hidden;
+}
+.goods-thumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 </style>

@@ -1,9 +1,10 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
+import { API_BASE } from '@/utils/imageUrl'
 
 /* 1.创建 axios(网络通信组件) 实例对象。 */
 const service = axios.create({
-    baseURL: 'http://localhost:8090/mall-sys',
+    baseURL: API_BASE,
     timeout: 0
 });
 

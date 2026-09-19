@@ -25,7 +25,8 @@
 		<el-table-column prop="brandName" label="品牌名称" width="150"></el-table-column>
 		<el-table-column label="品牌LOGO" width="120">
 			<template slot-scope="scope">
-				<el-image :src="scope.row.imgUrl" style="width:80px; height:40px;" fit="contain"></el-image>
+				<el-image v-if="scope.row.imgUrl" :src="scope.row.imgUrl" style="width:80px; height:40px;" fit="contain"></el-image>
+				<span v-else style="color:#c0c4cc; font-size:12px;">无图</span>
 			</template>
 		</el-table-column>
 		<el-table-column prop="showStatus" label="显示状态" width="100">
@@ -93,6 +94,7 @@
 
 <script>
 import { pickForm } from '@/utils/common.js'
+import { brandLogoUrl } from '@/utils/imageUrl'
 import {
 	list,
 	addBrand,
@@ -131,9 +133,7 @@ export default {
   methods:{
 	/* 【M1】获取品牌列表入口【TODO】 */
 	getBrandList(searchForm, page){
-		/* 1.定义基地址. */
-		let BASE = "http://localhost:8090/mall-sys";
-		this.curPage = page;   /* 2.赋值当前页. */
+		/* 1.赋值当前页. */
 		/* 3.调用 API 方法请求数据. */
 		list( this.curPage, this.pageSize, searchForm )
 		.then(resp=>{
@@ -142,7 +142,9 @@ export default {
 			/* 3.2.设置图片的显示地址。 */
 			this.brandList.forEach(
 				br=>{
-					br.imgUrl = `${BASE}/Brand/showImg/${br.logoName}`;
+					/* 后端列表接口返回字段为 logoUrl（兼容旧字段 logoName） */
+					br.logoName = br.logoName || br.logoUrl;
+					br.imgUrl = brandLogoUrl( br.logoName || br.logoUrl );
 				}
 			);
 			this.totalCount = resp.total;
@@ -314,8 +316,7 @@ export default {
 				this.disableSave = false;
 				/* 2.把文件名保存到 brand 表单。 */
 				this.brandForm.logoName = fileName;
-				let BASE = "http://localhost:8090/mall-sys";
-				this.brandForm.imgUrl = `${BASE}/Brand/showImg/${fileName}`;
+				this.brandForm.imgUrl = brandLogoUrl( fileName );
 			}
 		);
 	},

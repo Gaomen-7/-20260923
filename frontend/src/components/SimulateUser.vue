@@ -21,8 +21,11 @@
 
       <div class="goods-grid">
         <div v-for="g in goodsList" :key="g.id" class="goods-card" :class="{flash: g._flash}">
-          <div class="goods-img" :style="{background: grad(g.id)}">{{ g.goods_name ? g.goods_name.charAt(0) : '?' }}</div>
-          <div class="goods-name" :title="g.goods_name">{{ g.goods_name }}</div>
+          <div class="goods-img" :style="g.mainImage ? {} : {background: grad(g.id)}">
+            <img v-if="g.mainImage" class="goods-img-real" :src="coverUrl(g.mainImage)" />
+            <span v-else>{{ g.goodsName.charAt(0) }}</span>
+          </div>
+          <div class="goods-name" :title="g.goodsName">{{ g.goodsName }}</div>
           <div class="goods-price">￥{{ g.price }}</div>
           <div class="goods-btns">
             <el-button size="mini" @click="handleView(g)">浏览</el-button>
@@ -70,16 +73,17 @@
 
 <script>
 import { getGoodsList } from '@/api/pms_goods.js'
+import { goodsCoverUrl } from '@/utils/imageUrl'
 
 var DEMO_GOODS = [
-  { id: 9001, goods_name: '旗舰智能手机 Pro Max', price: 5999 },
-  { id: 9002, goods_name: '轻薄笔记本电脑 14寸', price: 6999 },
-  { id: 9003, goods_name: '无线降噪耳机', price: 1299 },
-  { id: 9004, goods_name: '智能手表运动版', price: 1599 },
-  { id: 9005, goods_name: '4K 高清投影仪', price: 3299 },
-  { id: 9006, goods_name: '机械键盘 87键', price: 459 },
-  { id: 9007, goods_name: '人体工学办公椅', price: 899 },
-  { id: 9008, goods_name: '便携咖啡机', price: 699 }
+  { id: 9001, goodsName: '旗舰智能手机 Pro Max', price: 5999 },
+  { id: 9002, goodsName: '轻薄笔记本电脑 14寸', price: 6999 },
+  { id: 9003, goodsName: '无线降噪耳机', price: 1299 },
+  { id: 9004, goodsName: '智能手表运动版', price: 1599 },
+  { id: 9005, goodsName: '4K 高清投影仪', price: 3299 },
+  { id: 9006, goodsName: '机械键盘 87键', price: 459 },
+  { id: 9007, goodsName: '人体工学办公椅', price: 899 },
+  { id: 9008, goodsName: '便携咖啡机', price: 699 }
 ]
 
 var GRADS = [
@@ -123,6 +127,9 @@ export default {
     this.autoTimer = null
   },
   methods: {
+    coverUrl( fileName ){
+      return goodsCoverUrl( fileName );
+    },
     grad(id) {
       return GRADS[id % GRADS.length]
     },
@@ -144,7 +151,14 @@ export default {
     loadGoods() {
       getGoodsList({ page: 1, limit: 12, publishStatus: 1 }).then((resp) => {
         var list = (resp && resp.data && resp.data.goods) ? resp.data.goods : (resp && resp.data || [])
-        this.goodsList = list.slice(0, 12)
+        this.goodsList = list.slice(0, 12).map(function (item) {
+          return {
+            id: item.id,
+            goodsName: item.goodsName || item.goods_name || ('商品' + item.id),
+            price: item.price,
+            mainImage: item.mainImage || item.main_image || ''
+          }
+        })
         this.bootLogs()
       }).catch(() => {
         this.goodsList = DEMO_GOODS
@@ -180,7 +194,7 @@ export default {
       })
     },
     handleView(g) {
-      this.pushLog('view', '浏览商品 ' + g.goods_name + ' (id=' + g.id + ') ￥' + g.price)
+      this.pushLog('view', '浏览商品 ' + g.goodsName + ' (id=' + g.id + ') ￥' + g.price)
       var self = this
       g._flash = true
       setTimeout(() => { g._flash = false }, 200)
@@ -189,20 +203,20 @@ export default {
       var idx = this.favorites.indexOf(g.id)
       if (idx > -1) {
         this.favorites.splice(idx, 1)
-        this.pushLog('fav', '取消收藏 ' + g.goods_name)
+        this.pushLog('fav', '取消收藏 ' + g.goodsName)
       } else {
         this.favorites.push(g.id)
-        this.pushLog('fav', '收藏商品 ' + g.goods_name)
+        this.pushLog('fav', '收藏商品 ' + g.goodsName)
       }
     },
     handleAddCart(g) {
       this.cart[g.id] = (this.cart[g.id] || 0) + 1
       // 触发响应式更新
       this.cart = Object.assign({}, this.cart)
-      this.pushLog('cart', '加入购物车 ' + g.goods_name + ' 数量=' + this.cart[g.id] + ' 单价￥' + g.price)
+      this.pushLog('cart', '加入购物车 ' + g.goodsName + ' 数量=' + this.cart[g.id] + ' 单价￥' + g.price)
     },
     handleBuy(g) {
-      this.pushLog('buy', '提交订单 ' + g.goods_name + ' ￥' + g.price)
+      this.pushLog('buy', '提交订单 ' + g.goodsName + ' ￥' + g.price)
       setTimeout(() => {
         this.pushLog('pay', '支付成功 订单金额￥' + g.price)
       }, 400)
@@ -331,6 +345,12 @@ export default {
   font-weight: 700;
   color: #fff;
   margin-bottom: 8px;
+  overflow: hidden;
+}
+.goods-img-real {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .goods-name {
   font-size: 13px;

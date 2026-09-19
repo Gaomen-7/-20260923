@@ -157,6 +157,7 @@
 /* 1.导入相关 api. */
 import { getSaleAttr, getAlbumList, generateSku, saveSkuCache } from '@/api/pms_publish.js'
 import { listByCategory } from '@/api/pms_goodsAttr.js'
+import { albumUrl } from '@/utils/imageUrl'
 
 export default {
   name: 'SetSku',
@@ -173,7 +174,7 @@ export default {
   methods: {
 	/* 图片URL拼接 */
 	imgUrl( fileName ){
-		return 'http://localhost:8090/mall-sys/PublishGoods/showImg/album/' + fileName;
+		return albumUrl( fileName );
 	},
 
 	/* 展开/收起行 */

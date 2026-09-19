@@ -152,6 +152,7 @@
 import { getCategoryList } from '@/api/pms_category.js'
 import { getBrandOptions } from '@/api/pms_brand.js'
 import { pickForm } from '@/utils/common.js'
+import { apiUrl } from '@/utils/imageUrl'
 import { uploadImage, savePublishBase } from '@/api/pms_publish.js'
 
 export default {
@@ -241,14 +242,13 @@ export default {
 		FD.append("file", param.file);
 		/* 2.这里指定我上传的是主图 type=1 */
 		FD.append("type", 1);
-		let BASE = "http://localhost:8090/mall-sys";
 		/* 3.调用 api 方法执行上传. */
 		uploadImage( FD )
 		.then(
 			resp=>{
 				this.$message("图片上传成功。");
 				this.disableSave = false;
-				this.imageUrl = BASE + resp.logoUri;
+				this.imageUrl = apiUrl( resp.logoUri );
 				this.spuForm.goodsDetail.mainImage = resp.fileName;
 			}
 		);
@@ -261,13 +261,12 @@ export default {
 			FD.append("file", file.raw);
 			/* type=2 表示图集 */
 			FD.append("type", 2);
-			let BASE = "http://localhost:8090/mall-sys";
 			uploadImage( FD )
 			.then(
 				resp=>{
 					this.$message("图集图片上传成功。");
 					this.albumImages.push({
-						url: BASE + resp.logoUri
+						url: apiUrl( resp.logoUri )
 					});
 					this.spuForm.spuAlbum.images.push(resp.fileName);
 				}
