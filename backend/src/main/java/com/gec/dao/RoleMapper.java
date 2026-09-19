@@ -12,14 +12,14 @@ import java.util.Map;
 public interface RoleMapper extends BaseMapper<Role> {
     /*写入tbl_role数据，建立关联*/
     @Insert("INSERT INTO tbl_user_role(user_id,role_id)"+"VALUES(#{user_id},#{role_id})")
-    int addUserRoleAssocition(
+    int addUserRoleAssociation(
             @Param("userId")Integer userId,
             @Param("roleId")Integer roleId);
 
 
     /*移除用户与角色关联数据*/
-    @Delete("DELETE FROM tbl_user_role"+"WHERE user_id=#{userId}")
-    int removeUserRoleAssocition(
+    @Delete("DELETE FROM tbl_user_role WHERE user_id=#{userId}")
+    int removeUserRoleAssociation(
             @Param("userId")Integer userId);
 
 }

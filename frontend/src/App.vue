@@ -22,6 +22,10 @@
           <svg class="ic" style="color:var(--dop-green)" viewBox="0 0 256 256" fill="currentColor"><path d="M72,104a8,8,0,0,1,8-8h96a8,8,0,0,1,0,16H80A8,8,0,0,1,72,104Zm8,40h96a8,8,0,0,0,0-16H80a8,8,0,0,0,0,16ZM232,56V208a8,8,0,0,1-11.58,7.15L192,200.94l-28.42,14.21a8,8,0,0,1-7.16,0L128,200.94,99.58,215.15a8,8,0,0,1-7.16,0L64,200.94,35.58,215.15A8,8,0,0,1,24,208V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56Zm-16,0H40V195.06l20.42-10.22a8,8,0,0,1,7.16,0L96,199.06l28.42-14.22a8,8,0,0,1,7.16,0L160,199.06l28.42-14.22a8,8,0,0,1,7.16,0L216,195.06Z"/></svg>
           <span>部门管理</span>
         </router-link>
+        <router-link to="/roleManage" class="nav-item" :class="{on: P==26}" @click.native="select(26)">
+          <svg class="ic" style="color:var(--dop-purple)" viewBox="0 0 256 256" fill="currentColor"><path d="M128,16A112,112,0,1,0,240,128,112.13,112.13,0,0,0,128,16Zm0,200a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-16-128h32v32h32v32h-32v32H112V152H80V120h32Z"/></svg>
+          <span>角色管理</span>
+        </router-link>
 
         <div class="nav-section">商品</div>
         <router-link to="/category" class="nav-item" :class="{on: P==4}" @click.native="select(4)">
@@ -167,7 +171,7 @@ export default {
   computed:{
 	currentPageTitle(){
 	  const map = {
-	    1:'数据全景', 2:'用户管理', 3:'部门管理', 4:'商品类别',
+	    1:'数据全景', 2:'用户管理', 3:'部门管理', 26:'角色管理', 4:'商品类别',
 	    5:'品牌管理', 6:'属性分组', 8:'规格参数', 9:'销售属性',
 	    10:'商品管理', 11:'发布商品', 16:'SKU管理', 12:'订单管理',
 	    17:'活动管理', 18:'会员管理', 19:'库存管理', 20:'广告设置',

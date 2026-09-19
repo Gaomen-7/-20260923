@@ -48,10 +48,10 @@ public class DeptController
     @GetMapping(value="/getDept/{id}")
     public R getDept (@PathVariable("id") Integer id){
         Dept dept = deptService.getById(id);
-        return R.ok();
+        return R.ok(dept);
     }
     /* 5.删除部门-DELETE请求. */
-    @DeleteMapping(value="/getDept/{id}")
+    @DeleteMapping(value="/deleteDept/{id}")
     public R deleteDept(@PathVariable("id") Integer id){
         deptService.deleteDept(id);
         return R.ok();

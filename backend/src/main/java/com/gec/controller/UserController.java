@@ -120,6 +120,19 @@ public class UserController extends BaseController {
     }
 
     /* 6.删除用户-DELETE请求. */
+    @DeleteMapping(
+            value="/deleteUser/{id}",
+            produces = "application/json;charset=UTF-8"
+    )
+    public R deleteUser(@PathVariable("id") Integer id){
+        try{
+            userService.deleteUser(id);
+            return R.ok();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return R.err(e);
+        }
+    }
 
     @Override
     protected FileTemplate getFileTemplate() {

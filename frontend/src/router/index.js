@@ -18,6 +18,7 @@ import InventoryManage from '@/components/InventoryManage'
 import AdvertManage from '@/components/AdvertManage'
 import Login from '@/components/Login'
 import AttrGroupManage from '@/components/AttrGroupManage'
+import RoleManage from '@/components/RoleManage'
 
 Vue.use(Router)
 
@@ -37,6 +38,11 @@ const router = new Router({
       path: '/dept',
       name: 'dept',
       component: Dept
+    },
+    {
+      path: '/roleManage',
+      name: 'roleManage',
+      component: RoleManage
     },
     {
       path: '/brand',

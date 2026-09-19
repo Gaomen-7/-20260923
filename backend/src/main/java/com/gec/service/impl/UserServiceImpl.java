@@ -34,6 +34,7 @@ public class UserServiceImpl
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public void saveUser(User user, Integer roleId) {
         boolean ret = saveOrUpdate(user);
         if(!ret){
@@ -50,8 +51,23 @@ public class UserServiceImpl
         return getById(id);
     }
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public void deleteUser(Integer id) {
-
+        /* 1. 禁止删除 admin 账号 */
+        User user = getById(id);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+        if ("admin".equals(user.getAccount())) {
+            throw new RuntimeException("超级管理员账号不允许删除");
+        }
+        /* 2. 先删用户-角色关联 */
+        roleService.removeUserRoleAssociation(id);
+        /* 3. 再删用户 */
+        boolean ret = removeById(id);
+        if (!ret) {
+            throw new RuntimeException("删除用户失败");
+        }
     }
 
     @Override

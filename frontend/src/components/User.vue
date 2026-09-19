@@ -188,7 +188,7 @@
 					</el-select>
 				</el-form-item>
 
-				<el-form-item label="角色">
+				<el-form-item label="角色" prop="roleId">
 					<el-select v-model="userForm.roleId" placeholder="角色">
 					    <el-option label="请选择角色" value=""></el-option>
 							<el-option
@@ -279,7 +279,7 @@ export default {
 				{min: 3, max: 10, message: "帐号长度要求: (3-10)字符"},
 			],
 			roleId: [
-				{required: true, message: "请选择角色", trigger: "blur"},
+				{required: true, message: "请选择角色", trigger: "change"},
 			]
 		},
 
@@ -378,12 +378,16 @@ export default {
 	点击对话框【保存】==>【触发以下函数】
 	*/
 	doSaveUser(){
-		/* 区分现在是 添加/更新 */
-		if( this.opMode=="add" ){
-			this.doAddUser();
-		}else{
-			this.doUpdateUser();
-		}
+		/* 0.先跑表单校验（账号必填+角色必选），通过后才提交 */
+		this.$refs.userFormRef.validate( valid=>{
+			if( !valid ){ return; }
+			/* 区分现在是 添加/更新 */
+			if( this.opMode=="add" ){
+				this.doAddUser();
+			}else{
+				this.doUpdateUser();
+			}
+		});
 	},
 
 	/* M08.批量删除用户 【TODO】 */

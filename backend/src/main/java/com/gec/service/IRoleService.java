@@ -25,6 +25,15 @@ public interface IRoleService extends IService<Role> {
 
     Role getRole(Integer id);
 
+    /** 查询全部权限点（平铺） */
+    java.util.List<com.gec.domain.entity.Permission> listAllPermissions();
+
+    /** 查询某角色已分配的权限ID列表 */
+    java.util.List<Integer> getRolePermissionIds(Integer roleId);
+
+    /** 给角色分配权限（先删后插，事务） */
+    void assignPermissions(Integer roleId, java.util.List<Integer> permissionIds);
+
 }
 
 
