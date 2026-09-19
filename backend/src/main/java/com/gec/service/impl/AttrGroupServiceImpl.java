@@ -11,6 +11,8 @@ import com.gec.service.IAttrGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AttrGroupServiceImpl
     extends ServiceImpl<AttrGroupMapper, GoodsAttrGroup>
@@ -55,6 +57,15 @@ public class AttrGroupServiceImpl
         if(cnt!=1){
             throw new RuntimeException("删除属性分组失败");
         }
+    }
+
+    /*查询某分类下的属性分组列表（下拉选项用）*/
+    @Override
+    public List<GoodsAttrGroup> listGroupsByCategory(Integer categoryId){
+        LambdaQueryWrapper<GoodsAttrGroup>QW = new LambdaQueryWrapper<>();
+        QW.eq(GoodsAttrGroup::getCategoryId,categoryId)
+          .orderByAsc(GoodsAttrGroup::getSort);
+        return attrGroupMapper.selectList(QW);
     }
 
 }

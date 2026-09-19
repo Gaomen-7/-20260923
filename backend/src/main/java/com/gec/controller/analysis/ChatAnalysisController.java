@@ -2,7 +2,7 @@ package com.gec.controller.analysis;
 
 import com.gec.controller.BaseController;
 import com.gec.controller.R;
-import com.gec.dao.ChatAnalysisStatMapper;
+import com.gec.service.IAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,14 +20,14 @@ import javax.servlet.http.HttpServletResponse;
 public class ChatAnalysisController extends BaseController {
 
     @Autowired
-    private ChatAnalysisStatMapper chatAnalysisStatMapper;
+    private IAnalysisService analysisService;
 
     /* 1. 会话指标卡片（会话数/用户数/平均时长/解决率/转化率） */
     @GetMapping("/overview")
     public R overview(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", chatAnalysisStatMapper.selectByDimensionType("overview", startDate, endDate));
+        return R.ok().put("data", analysisService.chatByDimension("overview", startDate, endDate));
     }
 
     /* 2. 咨询类型饼图 */
@@ -35,7 +35,7 @@ public class ChatAnalysisController extends BaseController {
     public R typeDist(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", chatAnalysisStatMapper.selectByDimensionType("chat_type", startDate, endDate));
+        return R.ok().put("data", analysisService.chatByDimension("chat_type", startDate, endDate));
     }
 
     /* 3. 咨询时段热力图 */
@@ -43,7 +43,7 @@ public class ChatAnalysisController extends BaseController {
     public R heatmap(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", chatAnalysisStatMapper.selectByDimensionType("hour", startDate, endDate));
+        return R.ok().put("data", analysisService.chatByDimension("hour", startDate, endDate));
     }
 
     /* 4. 咨询转化柱状图（按咨询类型） */
@@ -51,7 +51,7 @@ public class ChatAnalysisController extends BaseController {
     public R conversion(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", chatAnalysisStatMapper.selectByDimensionType("conversion", startDate, endDate));
+        return R.ok().put("data", analysisService.chatByDimension("conversion", startDate, endDate));
     }
 
     /* 5. 热门咨询商品榜 */
@@ -60,7 +60,7 @@ public class ChatAnalysisController extends BaseController {
             @RequestParam(required = false, defaultValue = "10") Integer limit,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", chatAnalysisStatMapper.selectTopConsultedProducts(limit, startDate, endDate));
+        return R.ok().put("data", analysisService.chatTopConsultedProducts(limit, startDate, endDate));
     }
 
     @ExceptionHandler(Exception.class)

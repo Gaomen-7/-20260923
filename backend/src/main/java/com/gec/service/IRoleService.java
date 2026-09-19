@@ -34,6 +34,9 @@ public interface IRoleService extends IService<Role> {
     /** 给角色分配权限（先删后插，事务） */
     void assignPermissions(Integer roleId, java.util.List<Integer> permissionIds);
 
+    /** 角色下拉选项（供用户管理页使用） */
+    java.util.List<com.gec.domain.vo.OptionVO> roleOptions();
+
 }
 
 

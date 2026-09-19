@@ -3,9 +3,7 @@ package com.gec.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gec.components.FileTemplate;
-import com.gec.dao.OptionMapper;
 import com.gec.domain.entity.Role;
-import com.gec.domain.vo.OptionVO;
 import com.gec.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +17,12 @@ import java.util.Map;
 public class RoleController extends BaseController {
 
     @Autowired
-    private OptionMapper optionMapper;
-    @Autowired
     private IRoleService roleService;
 
     /* 角色下拉选项（供用户管理页使用） */
     @GetMapping("/roleOptions")
     public R roleOptions() {
-        List<OptionVO> ops = optionMapper.roleOptions();
-        return R.ok(ops);
+        return R.ok(roleService.roleOptions());
     }
 
     /* 1.角色分页列表 */

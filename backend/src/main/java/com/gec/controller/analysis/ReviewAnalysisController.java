@@ -2,7 +2,7 @@ package com.gec.controller.analysis;
 
 import com.gec.controller.BaseController;
 import com.gec.controller.R;
-import com.gec.dao.ReviewAnalysisStatMapper;
+import com.gec.service.IAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,14 +22,14 @@ import java.util.Arrays;
 public class ReviewAnalysisController extends BaseController {
 
     @Autowired
-    private ReviewAnalysisStatMapper reviewAnalysisStatMapper;
+    private IAnalysisService analysisService;
 
     /* 1. 评价指标卡片（总数/好评率/平均分/追评率） */
     @GetMapping("/overview")
     public R overview(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", reviewAnalysisStatMapper.selectByDimensionType("overview", startDate, endDate));
+        return R.ok().put("data", analysisService.reviewByDimension("overview", startDate, endDate));
     }
 
     /* 2. 评价等级饼图（好/中/差） */
@@ -37,7 +37,7 @@ public class ReviewAnalysisController extends BaseController {
     public R levelDist(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", reviewAnalysisStatMapper.selectByDimensionType("rating_level", startDate, endDate));
+        return R.ok().put("data", analysisService.reviewByDimension("rating_level", startDate, endDate));
     }
 
     /* 3. 关键词词云（好评+差评合并，前端按 dimension_type 区分） */
@@ -46,7 +46,7 @@ public class ReviewAnalysisController extends BaseController {
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
         return R.ok().put("data",
-                reviewAnalysisStatMapper.selectByDimensionTypes(Arrays.asList("keyword_good", "keyword_bad"), startDate, endDate));
+                analysisService.reviewByDimensions(Arrays.asList("keyword_good", "keyword_bad"), startDate, endDate));
     }
 
     /* 4. 商品口碑对比（review无category维度，返回商品口碑TOP数据） */
@@ -57,7 +57,7 @@ public class ReviewAnalysisController extends BaseController {
             @RequestParam(required = false) String endDate) {
         return R.ok()
                 .put("note", "review表无category维度，返回商品口碑TOP数据")
-                .put("data", reviewAnalysisStatMapper.selectByDimensionType("product_top", startDate, endDate));
+                .put("data", analysisService.reviewByDimension("product_top", startDate, endDate));
     }
 
     /* 5. 口碑趋势折线图（好评率按日期） */
@@ -65,7 +65,7 @@ public class ReviewAnalysisController extends BaseController {
     public R trend(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", reviewAnalysisStatMapper.selectByDimensionType("overview", startDate, endDate));
+        return R.ok().put("data", analysisService.reviewByDimension("overview", startDate, endDate));
     }
 
     /* 6. 商品口碑榜（好评TOP+差评榜合并，按好评率排序） */
@@ -74,7 +74,7 @@ public class ReviewAnalysisController extends BaseController {
             @RequestParam(required = false, defaultValue = "10") Integer limit,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", reviewAnalysisStatMapper.selectProductWordOfMouth(limit, startDate, endDate));
+        return R.ok().put("data", analysisService.reviewProductWordOfMouth(limit, startDate, endDate));
     }
 
     @ExceptionHandler(Exception.class)

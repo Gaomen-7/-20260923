@@ -3,10 +3,12 @@ package com.gec.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gec.dao.OptionMapper;
 import com.gec.dao.PermissionMapper;
 import com.gec.dao.RoleMapper;
 import com.gec.domain.entity.Permission;
 import com.gec.domain.entity.Role;
+import com.gec.domain.vo.OptionVO;
 import com.gec.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class RoleServiceImpl
     private RoleMapper roleMapper;
     @Autowired
     private PermissionMapper permissionMapper;
+    @Autowired
+    private OptionMapper optionMapper;
 
     @Override
     public void addUserRoleAssociation(Integer userId, Integer roleId) {
@@ -98,5 +102,11 @@ public class RoleServiceImpl
         if (permissionIds != null && !permissionIds.isEmpty()) {
             permissionMapper.batchInsertRolePermission(roleId, permissionIds);
         }
+    }
+
+    /** 角色下拉选项（供用户管理页使用） */
+    @Override
+    public List<OptionVO> roleOptions() {
+        return optionMapper.roleOptions();
     }
 }

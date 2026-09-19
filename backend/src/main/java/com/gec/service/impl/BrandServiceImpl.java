@@ -5,15 +5,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gec.dao.BrandMapper;
+import com.gec.dao.OptionMapper;
 import com.gec.domain.entity.Brand;
 import com.gec.domain.search.BrandSearch;
 import com.gec.domain.vo.BrandCategoryVO;
 import com.gec.domain.vo.BrandVO;
+import com.gec.domain.vo.OptionVO;
 import com.gec.service.IBrandService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -29,6 +32,14 @@ public class BrandServiceImpl
     implements IBrandService {
     @Autowired
     private BrandMapper brandMapper;
+    @Autowired
+    private OptionMapper optionMapper;
+
+    /** 根据类别ID查询关联的品牌选项（下拉用） */
+    @Override
+    public List<OptionVO> brandOptions(Integer categoryId) {
+        return optionMapper.brandOptions(categoryId);
+    }
 
     @Override
     public IPage<Brand> listBrand(

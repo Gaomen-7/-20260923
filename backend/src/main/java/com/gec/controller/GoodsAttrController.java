@@ -1,15 +1,13 @@
 package com.gec.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gec.components.FileTemplate;
-import com.gec.dao.AttrGroupMapper;
 import com.gec.domain.bo.GoodsAttrBO;
 import com.gec.domain.entity.GoodsAttr;
-import com.gec.domain.entity.GoodsAttrGroup;
 import com.gec.domain.search.GoodsAttrSearch;
 import com.gec.domain.vo.GoodsAttrVO;
+import com.gec.service.IAttrGroupService;
 import com.gec.service.IGoodsAttrService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +22,7 @@ public class GoodsAttrController extends BaseController {
     private IGoodsAttrService goodsAttrService;
 
     @Autowired
-    private AttrGroupMapper attrGroupMapper;
+    private IAttrGroupService attrGroupService;
 
     /* 【1】分页查询属性列表（支持按分类/类型/名称/分组筛选） */
     @PostMapping("/list/{page}/{limit}")
@@ -73,11 +71,7 @@ public class GoodsAttrController extends BaseController {
     @GetMapping("/groupOptions/{categoryId}")
     public R groupOptions(
         @PathVariable("categoryId") Integer categoryId) {
-        QueryWrapper<GoodsAttrGroup> QW = new QueryWrapper<>();
-        QW.eq("category_id", categoryId)
-          .orderByAsc("sort");
-        List<GoodsAttrGroup> list = attrGroupMapper.selectList(QW);
-        return R.ok(list);
+        return R.ok(attrGroupService.listGroupsByCategory(categoryId));
     }
 
     @ExceptionHandler(Exception.class)

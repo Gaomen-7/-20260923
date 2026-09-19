@@ -14,7 +14,7 @@ public interface CategoryMapper
         extends BaseMapper<Category> {
 
     /*-- 1.获取父 ID 序列(获取某个类别的上代序列) --*/
-    @Select("SELETE p_id FROM tbl_goods_category"+"WHERE id=#{id}")
+    @Select("SELECT p_id FROM tbl_goods_category WHERE id=#{id}")
     String getPids(Integer id);
 
 

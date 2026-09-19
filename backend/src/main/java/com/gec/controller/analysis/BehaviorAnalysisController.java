@@ -2,7 +2,7 @@ package com.gec.controller.analysis;
 
 import com.gec.controller.BaseController;
 import com.gec.controller.R;
-import com.gec.dao.UserBehaviorStatMapper;
+import com.gec.service.IAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,14 +20,14 @@ import javax.servlet.http.HttpServletResponse;
 public class BehaviorAnalysisController extends BaseController {
 
     @Autowired
-    private UserBehaviorStatMapper userBehaviorStatMapper;
+    private IAnalysisService analysisService;
 
     /* 1. 流量入口分布（饼图+柱状图） */
     @GetMapping("/source")
     public R source(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", userBehaviorStatMapper.selectByDimensionType("source", startDate, endDate));
+        return R.ok().put("data", analysisService.behaviorByDimension("source", startDate, endDate));
     }
 
     /* 2. 行为趋势（折线图，按日期+行为类型） */
@@ -35,7 +35,7 @@ public class BehaviorAnalysisController extends BaseController {
     public R trend(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", userBehaviorStatMapper.selectByDimensionType("behavior", startDate, endDate));
+        return R.ok().put("data", analysisService.behaviorByDimension("behavior", startDate, endDate));
     }
 
     /* 3. 热搜关键词榜 */
@@ -45,7 +45,7 @@ public class BehaviorAnalysisController extends BaseController {
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
         return R.ok().put("data",
-                userBehaviorStatMapper.selectTopByDimensionType("keyword", "pv", limit, startDate, endDate));
+                analysisService.behaviorTopByDimension("keyword", "pv", limit, startDate, endDate));
     }
 
     /* 4. 转化漏斗 */
@@ -53,7 +53,7 @@ public class BehaviorAnalysisController extends BaseController {
     public R funnel(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", userBehaviorStatMapper.selectByDimensionType("funnel", startDate, endDate));
+        return R.ok().put("data", analysisService.behaviorByDimension("funnel", startDate, endDate));
     }
 
     /* 5. 时段热力图 */
@@ -61,7 +61,7 @@ public class BehaviorAnalysisController extends BaseController {
     public R heatmap(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", userBehaviorStatMapper.selectByDimensionType("hour", startDate, endDate));
+        return R.ok().put("data", analysisService.behaviorByDimension("hour", startDate, endDate));
     }
 
     /* 6. 热门商品榜（浏览+加购+收藏合并，按pv排序） */
@@ -70,7 +70,7 @@ public class BehaviorAnalysisController extends BaseController {
             @RequestParam(required = false, defaultValue = "10") Integer limit,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", userBehaviorStatMapper.selectTopProducts(limit, startDate, endDate));
+        return R.ok().put("data", analysisService.behaviorTopProducts(limit, startDate, endDate));
     }
 
     @ExceptionHandler(Exception.class)

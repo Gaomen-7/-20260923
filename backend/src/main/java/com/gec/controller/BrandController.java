@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gec.components.FileTemplate;
-import com.gec.dao.OptionMapper;
 import com.gec.domain.entity.Brand;
 import com.gec.domain.search.BrandSearch;
 import com.gec.domain.vo.BrandCategoryVO;
@@ -26,9 +25,6 @@ import java.util.Map;
 public class BrandController extends BaseController {
     @Autowired
     private IBrandService brandService;
-
-    @Autowired
-    private OptionMapper optionMapper;
 
     @Autowired
     private FileUploadService fileUploadService;
@@ -154,8 +150,6 @@ public class BrandController extends BaseController {
     @GetMapping("/brandOptions/{categoryId}")
     public R brandOptions(
         @PathVariable("categoryId") Integer categoryId) {
-        List<OptionVO> options = optionMapper
-            .brandOptions(categoryId);
-        return R.ok(options);
+        return R.ok(brandService.brandOptions(categoryId));
     }
 }

@@ -21,6 +21,9 @@ public interface IBrandService extends IService<Brand> {
     void addBrand(Brand brand);
 
     void updateBrand(Brand brand);
+
+    /** 根据类别ID查询关联的品牌选项（下拉用） */
+    java.util.List<com.gec.domain.vo.OptionVO> brandOptions(Integer categoryId);
 }
 
 

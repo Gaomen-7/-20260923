@@ -2,7 +2,7 @@ package com.gec.controller.analysis;
 
 import com.gec.controller.BaseController;
 import com.gec.controller.R;
-import com.gec.dao.OrderAnalysisStatMapper;
+import com.gec.service.IAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,14 +21,14 @@ import java.util.Arrays;
 public class OrderAnalysisController extends BaseController {
 
     @Autowired
-    private OrderAnalysisStatMapper orderAnalysisStatMapper;
+    private IAnalysisService analysisService;
 
     /* 1. 销售指标卡片（订单数/总额/客单价/支付转化率） */
     @GetMapping("/overview")
     public R overview(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", orderAnalysisStatMapper.selectByDimensionType("overview", startDate, endDate));
+        return R.ok().put("data", analysisService.orderByDimension("overview", startDate, endDate));
     }
 
     /* 2. 销售趋势折线图（按日期） */
@@ -36,7 +36,7 @@ public class OrderAnalysisController extends BaseController {
     public R trend(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", orderAnalysisStatMapper.selectByDimensionType("overview", startDate, endDate));
+        return R.ok().put("data", analysisService.orderByDimension("overview", startDate, endDate));
     }
 
     /* 3. 品类销售结构饼图 */
@@ -44,7 +44,7 @@ public class OrderAnalysisController extends BaseController {
     public R category(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", orderAnalysisStatMapper.selectByDimensionType("category", startDate, endDate));
+        return R.ok().put("data", analysisService.orderByDimension("category", startDate, endDate));
     }
 
     /* 4. 退换货看板（原因分布+取消数，合并 return_reason + cancel） */
@@ -53,7 +53,7 @@ public class OrderAnalysisController extends BaseController {
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
         return R.ok().put("data",
-                orderAnalysisStatMapper.selectByDimensionTypes(Arrays.asList("return_reason", "cancel"), startDate, endDate));
+                analysisService.orderByDimensions(Arrays.asList("return_reason", "cancel"), startDate, endDate));
     }
 
     /* 5. 客单价直方图 */
@@ -61,7 +61,7 @@ public class OrderAnalysisController extends BaseController {
     public R priceRange(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", orderAnalysisStatMapper.selectByDimensionType("price_range", startDate, endDate));
+        return R.ok().put("data", analysisService.orderByDimension("price_range", startDate, endDate));
     }
 
     /* 6. 时段销售柱状图（按小时汇总） */
@@ -69,7 +69,7 @@ public class OrderAnalysisController extends BaseController {
     public R hourly(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        return R.ok().put("data", orderAnalysisStatMapper.selectHourlySales(startDate, endDate));
+        return R.ok().put("data", analysisService.orderHourlySales(startDate, endDate));
     }
 
     @ExceptionHandler(Exception.class)

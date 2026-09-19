@@ -11,7 +11,7 @@ import java.util.Map;
 
 public interface RoleMapper extends BaseMapper<Role> {
     /*写入tbl_role数据，建立关联*/
-    @Insert("INSERT INTO tbl_user_role(user_id,role_id)"+"VALUES(#{user_id},#{role_id})")
+    @Insert("INSERT INTO tbl_user_role(user_id,role_id) VALUES(#{userId},#{roleId})")
     int addUserRoleAssociation(
             @Param("userId")Integer userId,
             @Param("roleId")Integer roleId);

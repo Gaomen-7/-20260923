@@ -66,7 +66,7 @@
 			<el-form-item label="显示状态">
 				<el-switch v-model="brandForm.showStatus"
 					active-text="显示" inactive-text="不显示"
-					:active-value="true" :inactive-value="false"></el-switch>
+					:active-value="1" :inactive-value="0"></el-switch>
 			</el-form-item>
 			<el-form-item label="品牌LOGO">
 				<el-upload
@@ -198,12 +198,7 @@ export default {
 	/* 【M8】新增品牌(写入后台)【TODO】 */
 	doAddBrand(){
 		let bdName = this.brandForm.brandName;
-		/* 页面的值: true/false, 后台: 1/0 */
-		/* 1.这里要做数据的转换. */
-		let status = this.brandForm.showStatus;
-		status = (status==true) ? 1 : 0;
-		this.brandForm.showStatus = status;
-		/* 2.调用 API 方法请求后台. */
+		/* 1.调用 API 方法请求后台. */
 		addBrand( this.brandForm )
 		.then(resp=>{
 			this.onSaveSuccess("添加", bdName);
@@ -219,18 +214,11 @@ export default {
 		this.brandForm = {...row};   /* 对象拷贝 */
 		this.disableSave = false;     /* 允许提交. */
 		this.tips = "";
-
-		let status = this.brandForm.showStatus;
-		status = (status==1)? true : false;
-		this.brandForm.showStatus = status;
 	},
 
 	/* 【M10】更新品牌【TODO】 */
 	doUpdateBrand(){
 		let bdName = this.brandForm.brandName;
-		let status = this.brandForm.showStatus;
-		status = (status==true)? 1 : 0;
-		this.brandForm.showStatus = status;
 		updateBrand( this.brandForm )
 		.then(
 			resp=>{
