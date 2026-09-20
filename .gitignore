@@ -34,3 +34,8 @@ red_error.png
 phase2-csv/
 *.csv
 !**/src/**/*.csv
+
+# === 原始数据（答辩演示用，放行） ===
+!backend/phase2-data/
+!backend/phase2-data/*.csv
+!backend/phase2-data/*.log
