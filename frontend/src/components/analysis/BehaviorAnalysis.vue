@@ -183,15 +183,22 @@ export default {
     },
     loadFunnel() {
       var self = this
+      // funnel 维度的环节去重人数放在 pv 字段（conversionCount 语义为转化成功人数，funnel 下恒为 NULL）
+      var STEPS = ['浏览', '搜索', '加购', '下单', '支付']
       getFunnel(self.getParams()).then(function (resp) {
         var data = resp.data || []
-        var funnelData = []
+        var sumMap = {}
         data.forEach(function (item) {
-          funnelData.push({ name: item.dimensionValue, value: Number(item.conversionCount) || 0 })
+          var name = item.dimensionValue
+          sumMap[name] = (sumMap[name] || 0) + (Number(item.pv) || 0)
+        })
+        var funnelData = []
+        STEPS.forEach(function (step) {
+          funnelData.push({ name: step, value: sumMap[step] || 0 })
         })
         self.funnelChart.setOption({
-          tooltip: { trigger: 'item', formatter: '{b}: {c}' },
-          series: [{ name: '转化漏斗', type: 'funnel', sort: 'descending',
+          tooltip: { trigger: 'item', formatter: '{b}: {c}人' },
+          series: [{ name: '转化漏斗', type: 'funnel', sort: 'none',
             label: { formatter: '{b}: {c}' }, data: funnelData }]
         })
       })

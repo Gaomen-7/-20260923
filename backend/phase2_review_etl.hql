@@ -17,7 +17,7 @@ TRUNCATE TABLE ads_review_analysis;
 -- 1. 统一清洗：去重(review_id) / 过滤空内容与系统默认好评 / 等级规整 / 关键词标记
 DROP TABLE IF EXISTS tmp_clean_review;
 
-CREATE TEMPORARY TABLE tmp_clean_review AS
+CREATE TABLE tmp_clean_review AS
 SELECT
   review_id,
   order_id,
@@ -59,7 +59,7 @@ WHERE rn = 1;
 -- 1b. 每日评价总数（占比分母，规避 Hive 相关子查询限制）
 DROP TABLE IF EXISTS tmp_daily_total;
 
-CREATE TEMPORARY TABLE tmp_daily_total AS
+CREATE TABLE tmp_daily_total AS
 SELECT stat_date, COUNT(*) AS total_cnt
 FROM tmp_clean_review
 GROUP BY stat_date;

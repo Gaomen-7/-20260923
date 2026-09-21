@@ -1,0 +1,15 @@
+SELECT 'ods_user_behavior'  AS t, COUNT(*) AS c FROM ods_user_behavior;
+SELECT 'ods_order_data'     AS t, COUNT(*) AS c FROM ods_order_data;
+SELECT 'ods_review_data'    AS t, COUNT(*) AS c FROM ods_review_data;
+SELECT 'ods_chat_data'      AS t, COUNT(*) AS c FROM ods_chat_data;
+SELECT 'tmp_clean_behavior' AS t, COUNT(*) AS c FROM tmp_clean_behavior;
+SELECT 'tmp_funnel_step'    AS t, COUNT(*) AS c FROM tmp_funnel_step;
+SELECT 'tmp_clean_order'    AS t, COUNT(*) AS c FROM tmp_clean_order;
+SELECT 'tmp_daily_paid'     AS t, COUNT(*) AS c FROM tmp_daily_paid;
+SELECT 'tmp_clean_review'   AS t, COUNT(*) AS c FROM tmp_clean_review;
+SELECT 'tmp_daily_total'    AS t, COUNT(*) AS c FROM tmp_daily_total;
+SELECT 'tmp_clean_chat'     AS t, COUNT(*) AS c FROM tmp_clean_chat;
+SELECT 'ads_user_behavior'  AS t, COUNT(*) AS c FROM ads_user_behavior;
+SELECT 'ads_order_analysis' AS t, COUNT(*) AS c FROM ads_order_analysis;
+SELECT 'ads_review_analysis' AS t, COUNT(*) AS c FROM ads_review_analysis;
+SELECT 'ads_chat_analysis'  AS t, COUNT(*) AS c FROM ads_chat_analysis;

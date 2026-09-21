@@ -19,7 +19,7 @@ TRUNCATE TABLE ads_chat_analysis;
 -- 1. 统一清洗 + 字段规整
 DROP TABLE IF EXISTS tmp_clean_chat;
 
-CREATE TEMPORARY TABLE tmp_clean_chat AS
+CREATE TABLE tmp_clean_chat AS
 SELECT
   chat_id,
   user_id,

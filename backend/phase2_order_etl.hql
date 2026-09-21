@@ -16,7 +16,7 @@ TRUNCATE TABLE ads_order_analysis;
 DROP TABLE IF EXISTS tmp_clean_order;
 
 -- 1. 统一清洗：去重(order_id+product_id) / 异常过滤(actual_amount>0) / 状态规整
-CREATE TEMPORARY TABLE tmp_clean_order AS
+CREATE TABLE tmp_clean_order AS
 SELECT
   order_id,
   user_id,
@@ -62,7 +62,7 @@ WHERE rn = 1;
 -- 1b. 每日成交订单数（退换货率分母，规避 Hive 相关子查询限制）
 DROP TABLE IF EXISTS tmp_daily_paid;
 
-CREATE TEMPORARY TABLE tmp_daily_paid AS
+CREATE TABLE tmp_daily_paid AS
 SELECT
   stat_date,
   COUNT(DISTINCT CASE WHEN order_status IN ('已支付','已发货','已完成') THEN order_id END) AS paid_order_count

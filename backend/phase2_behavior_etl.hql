@@ -3,7 +3,7 @@
 -- 输入：ods_user_behavior（10万行）
 -- 输出：ads_user_behavior（宽表）
 -- 注意：Hive 的 WITH CTE 只对紧随的一条语句有效，
---       故用临时表 tmp_clean_behavior 承载清洗结果。
+--       故用中间表 tmp_clean_behavior 承载清洗结果（持久表，便于答辩现场核对）。
 -- ============================================================
 
 -- 0. 清空目标表（避免重复运行数据重复）
@@ -12,7 +12,7 @@ TRUNCATE TABLE ads_user_behavior;
 DROP TABLE IF EXISTS tmp_clean_behavior;
 
 -- 1. 统一清洗：去重 / 脏数据过滤 / 字段标准化
-CREATE TEMPORARY TABLE tmp_clean_behavior AS
+CREATE TABLE tmp_clean_behavior AS
 SELECT
   log_id,
   user_id,
@@ -153,7 +153,7 @@ LIMIT 50;
 -- ============================================================
 DROP TABLE IF EXISTS tmp_funnel_step;
 
-CREATE TEMPORARY TABLE tmp_funnel_step AS
+CREATE TABLE tmp_funnel_step AS
 SELECT
   stat_date,
   CASE behavior_type
